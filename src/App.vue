@@ -30,7 +30,6 @@
 			</template>
 			<template>
 				<button @click="testAxios()">Axios功能测试</button>
-				<button @click="changeArray()">数组切换测试</button>
 			</template>
 		</div>
 	</div>
@@ -61,20 +60,8 @@
 					7, 0, 0, 9, 0, 0, 5, 1, 0,
 				],
 				
-				sudoku_test: [
-					1, 2, 3, 4, 6, 6, 7, 8, 9,
-					2, 0, 3, 0, 0, 6, 0, 8, 0,
-					3, 0, 4, 0, 7, 0, 0, 0, 9,
-					4, 0, 2, 0, 0, 9, 0, 0, 3,
-					5, 6, 0, 0, 0, 0, 0, 7, 0,
-					6, 0, 0, 4, 0, 0, 8, 0, 0,
-					7, 0, 0, 0, 5, 0, 6, 0, 2,
-					8, 2, 0, 8, 0, 0, 4, 0, 0,
-					9, 0, 0, 9, 0, 0, 5, 1, 0,
-				],
-				
 				//成员为每个单元格对象
-				sudoku_data: [],
+				//sudoku_data: [],
 
 				//9个行对象
 				sudoku_rows: [],
@@ -86,42 +73,10 @@
 				sudoku_areas: []
 			};
 		},
-
-		methods: {
-			changeArray(){
-				//this.sudoku_array = this.sudoku_test;
-				this.sudoku_array.splice(0);
-				this.sudoku_array.push(...this.sudoku_test);
-				this.initSudokuData();
-				console.log('数组切换完成');
-				console.log(this.sudoku_array);
-				console.log(this.sudoku_data);
-				this.$forceUpdate();
-			},
-			
-			testAxios(){
-				this.$axios.get('http://192.168.108.79:8983/cgi-bin/getdata.py')
-				.then(response => {
-					//console.log(response.request.response);
-					//let res = response.request.response;
-					console.log(response.data);
-					this.sudokuid = response.data.sudokuid;
-					this.sudoku_array = response.data.sudokudata;
-					console.log(this.sudoku_array);
-					//根据初始值，生成81个单元格对象放入sudoku_data中
-					this.initSudokuData()
-					//初始化9个行对象
-					this.initSudokuRows();
-					//初始化9个列对象
-					this.initSudokuCols();
-					//初始化9个区域对象
-					this.initSudokuAreas();
-					console.log(this.sudoku_data);
-				})
-			},
-			
-			initSudokuData() {
-				console.log('数组切换完成');
+		
+		computed:{
+			sudoku_data:function(){
+				console.log('调用initSudokuData方法');
 				let _temp = [];
 				//console.log(this.sudoku_array.length);
 				for (let i = 0; i < this.sudoku_array.length; i++) {
@@ -146,8 +101,59 @@
 					}
 				}
 				//console.log(_temp);
-				this.sudoku_data = _temp;
+				return _temp;
+			}
+		},
+
+		methods: {
+			testAxios(){
+				this.$axios.get('http://192.168.108.79:8983/cgi-bin/getdata.py')
+				.then(response => {
+					//console.log(response.request.response);
+					//let res = response.request.response;
+					console.log(response.data);
+					this.sudokuid = response.data.sudokuid;
+					this.sudoku_array.splice(0);
+					this.sudoku_array.push(...response.data.sudokudata);
+					console.log(this.sudoku_array);
+					//根据初始值，生成81个单元格对象放入sudoku_data中
+					//this.changeArray();
+					//this.sudoku_array.splice(0);
+					//this.sudoku_array.push(...this.sudoku_test);
+					//console.log('2个数组的区别');
+					//console.log(this.sudoku_test, this.sudoku_array);
+					//console.log(this.sudoku_data);
+				})
 			},
+			
+			// initSudokuData() {
+			// 	console.log('调用initSudokuData方法');
+			// 	let _temp = [];
+			// 	//console.log(this.sudoku_array.length);
+			// 	for (let i = 0; i < this.sudoku_array.length; i++) {
+			// 		if (0 === this.sudoku_array[i]) {
+			// 			_temp.push({
+			// 				innerdata: [],
+			// 				system: false,
+			// 				userlocked: true,
+			// 				belongrow: {}, //单元格所属的行
+			// 				belongcol: {}, //单元格所属的列
+			// 				belongarea: {} //单元格所属的区域
+			// 			});
+			// 		} else {
+			// 			_temp.push({
+			// 				innerdata: [this.sudoku_array[i]],
+			// 				system: true,
+			// 				userlocked: false,
+			// 				belongrow: {}, //单元格所属的行
+			// 				belongcol: {}, //单元格所属的列
+			// 				belongarea: {} //单元格所属的区域
+			// 			})
+			// 		}
+			// 	}
+			// 	//console.log(_temp);
+			// 	this.sudoku_data = _temp;
+			// },
 
 			//初始化9个行对象
 			initSudokuRows() {
@@ -297,7 +303,7 @@
 
 		created: function() {
 			//根据初始值，生成81个单元格对象放入sudoku_data中
-			this.initSudokuData()
+			//this.initSudokuData()
 			//初始化9个行对象
 			this.initSudokuRows();
 			//初始化9个列对象

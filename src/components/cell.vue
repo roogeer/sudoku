@@ -169,6 +169,15 @@
 				cellnumber: this.initcellnumber
 			}
 		},
+		watch:{
+			initcellnumber:{
+				handler(newData){
+					this.cellnumber = newData;
+				},
+				//deep: true,
+				//immediate: true
+			}
+		}
 	}
 </script>
 
