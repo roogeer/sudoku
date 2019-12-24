@@ -1,7 +1,7 @@
 <template>
 	<div id="app">
 		<!--<img alt="Vue logo" src="./assets/logo.png" />-->
-		<HelloWorld msg="Sudoku v0.1" />
+		<HelloWorld msg="Sudoku v0.2" />
 		<div class="hello">
 			<h3>#{{ sudokuid }}</h3>
 		</div>
@@ -21,16 +21,20 @@
 			</div>
 		</div>
 		<div class="footer">
-			<template v-if="cheat">
-				<button @click="Cheat()">开始作弊</button>
-			</template>
-			<template v-else>
-				<button @click="LockOnlyOne()">锁定唯一值</button>
-				<button @click="DuplicateRemoval()">多值去重</button>
-			</template>
-			<template>
-				<button @click="testAxios()">Axios功能测试</button>
-			</template>
+			<div class="newgame">
+				<button @click="gameStart()">新的游戏</button>
+			</div>
+			<div class="cheat">
+				<template v-if="cheat">
+					<button @click="Cheat()">开始作弊</button>
+				</template>
+				<template v-else>
+					<button @click="LockOnlyOne()">锁定唯一值</button>
+					<button @click="DuplicateRemoval()">多值去重</button>
+					<button @click="FilterOnlyOne()">筛选唯一值</button>
+				</template>
+			</div>
+
 		</div>
 	</div>
 </template>
@@ -49,20 +53,17 @@
 				//sudoku_array: [],	//系统给出的初始数据
 				
 				sudoku_array: [
-					0, 8, 7, 0, 0, 2, 0, 0, 5,
-					0, 0, 3, 0, 0, 6, 0, 8, 0,
-					1, 0, 4, 0, 7, 0, 0, 0, 9,
-					0, 0, 2, 0, 0, 9, 0, 0, 3,
-					0, 6, 0, 0, 0, 0, 0, 7, 0,
-					5, 0, 0, 4, 0, 0, 8, 0, 0,
-					9, 0, 0, 0, 5, 0, 6, 0, 2,
-					0, 2, 0, 8, 0, 0, 4, 0, 0,
-					7, 0, 0, 9, 0, 0, 5, 1, 0,
+					0, 0, 2, 9, 0, 0, 0, 0, 0,
+					0, 1, 0, 0, 0, 6, 0, 7, 0,
+					0, 5, 0, 0, 8, 0, 2, 0, 0,
+					1, 0, 7, 0, 0, 0, 0, 0, 5,
+					0, 0, 6, 4, 0, 0, 7, 0, 0,
+					5, 0, 0, 0, 0, 3, 9, 0, 8,
+					0, 0, 5, 0, 0, 2, 0, 8, 0,
+					0, 9, 0, 5, 0, 0, 0, 2, 0,
+					0, 0, 0, 0, 0, 1, 4, 0, 0
 				],
 				
-				//成员为每个单元格对象
-				//sudoku_data: [],
-
 				//9个行对象
 				sudoku_rows: [],
 
@@ -76,9 +77,7 @@
 		
 		computed:{
 			sudoku_data:function(){
-				console.log('调用initSudokuData方法');
 				let _temp = [];
-				//console.log(this.sudoku_array.length);
 				for (let i = 0; i < this.sudoku_array.length; i++) {
 					if (0 === this.sudoku_array[i]) {
 						_temp.push({
@@ -100,63 +99,125 @@
 						})
 					}
 				}
-				//console.log(_temp);
 				return _temp;
 			}
 		},
 
 		methods: {
-			testAxios(){
+			gameStart(){
 				this.$axios.get('http://192.168.108.79:8983/cgi-bin/getdata.py')
 				.then(response => {
-					//console.log(response.request.response);
-					//let res = response.request.response;
-					console.log(response.data);
 					this.sudokuid = response.data.sudokuid;
 					this.sudoku_array.splice(0);
 					this.sudoku_array.push(...response.data.sudokudata);
-					console.log(this.sudoku_array);
-					//根据初始值，生成81个单元格对象放入sudoku_data中
-					//this.changeArray();
-					//this.sudoku_array.splice(0);
-					//this.sudoku_array.push(...this.sudoku_test);
-					//console.log('2个数组的区别');
-					//console.log(this.sudoku_test, this.sudoku_array);
-					//console.log(this.sudoku_data);
+					this.cheat = true;
 				})
 			},
 			
-			// initSudokuData() {
-			// 	console.log('调用initSudokuData方法');
-			// 	let _temp = [];
-			// 	//console.log(this.sudoku_array.length);
-			// 	for (let i = 0; i < this.sudoku_array.length; i++) {
-			// 		if (0 === this.sudoku_array[i]) {
-			// 			_temp.push({
-			// 				innerdata: [],
-			// 				system: false,
-			// 				userlocked: true,
-			// 				belongrow: {}, //单元格所属的行
-			// 				belongcol: {}, //单元格所属的列
-			// 				belongarea: {} //单元格所属的区域
-			// 			});
-			// 		} else {
-			// 			_temp.push({
-			// 				innerdata: [this.sudoku_array[i]],
-			// 				system: true,
-			// 				userlocked: false,
-			// 				belongrow: {}, //单元格所属的行
-			// 				belongcol: {}, //单元格所属的列
-			// 				belongarea: {} //单元格所属的区域
-			// 			})
-			// 		}
-			// 	}
-			// 	//console.log(_temp);
-			// 	this.sudoku_data = _temp;
-			// },
-
+			filterOnlyOne_rows(){
+				// 处理 行
+				for(let i=0; i<81; i++){
+					let _tempcell = this.sudoku_data[i];		//取出待处理单元格
+					if(!_tempcell.system && _tempcell.innerdata.length>1){
+						// 如果是用户单元格，且有多个可选值
+						// 把该行上其他单元格的可选数值取出来
+						let _tempRows = _tempcell.belongrow;	//取所属的 行 对象
+						let _tempOtherCellsArray = [];			//非待处理单元格的所有可选数值集合
+						for(let cell of _tempRows.cells){
+							if(cell !== _tempcell){
+								//如果不是待处理单元格本身，记录单元格的可选数值
+								_tempOtherCellsArray.push(...cell.innerdata);
+							}
+						}
+						//清除重复添加的数值
+						_tempOtherCellsArray = Array.from(new Set(_tempOtherCellsArray));
+						
+						// 判断 x 是否在其他单元格的可选数值中
+						for(let x of _tempcell.innerdata){
+							if(_tempOtherCellsArray.indexOf(x) === -1){
+								console.log('行中其他单元格的可选值', _tempOtherCellsArray, '单元格', i+1, '的:',x, "是唯一值");
+								// 处理单元格
+								this.sudoku_data[i].innerdata.splice(0);
+								this.sudoku_data[i].innerdata.push(x);
+							}
+						}
+					}
+				}
+			},
+			
+			filterOnlyOne_cols(){
+				// 处理 列
+				for(let i=0; i<81; i++){
+					let _tempcell = this.sudoku_data[i];		//取出待处理单元格
+					if(!_tempcell.system && _tempcell.innerdata.length>1){
+						// 如果是用户单元格，且有多个可选值
+						// 把该行上其他单元格的可选数值取出来
+						let _tempRows = _tempcell.belongcol;	//取所属的 列 对象
+						let _tempOtherCellsArray = [];			//非待处理单元格的所有可选数值集合
+						for(let cell of _tempRows.cells){
+							if(cell !== _tempcell){
+								//如果不是待处理单元格本身，记录单元格的可选数值
+								_tempOtherCellsArray.push(...cell.innerdata);
+							}
+						}
+						//清除重复添加的数值
+						_tempOtherCellsArray = Array.from(new Set(_tempOtherCellsArray));
+						
+						// 判断 x 是否在其他单元格的可选数值中
+						for(let x of _tempcell.innerdata){
+							if(_tempOtherCellsArray.indexOf(x) === -1){
+								console.log('列中其他单元格的可选值', _tempOtherCellsArray, '单元格', i+1, '的:',x, "是唯一值");
+								// 处理单元格
+								this.sudoku_data[i].innerdata.splice(0);
+								this.sudoku_data[i].innerdata.push(x);
+							}	
+						}
+					}
+				}
+			},
+			
+			filterOnlyOne_areas(){
+				// 处理 区域
+				for(let i=0; i<81; i++){
+					let _tempcell = this.sudoku_data[i];		//取出待处理单元格
+					if(!_tempcell.system && _tempcell.innerdata.length>1){
+						// 如果是用户单元格，且有多个可选值
+						// 把该行上其他单元格的可选数值取出来
+						let _tempRows = _tempcell.belongarea;	//取所属的 区域 对象
+						let _tempOtherCellsArray = [];			//非待处理单元格的所有可选数值集合
+						for(let cell of _tempRows.cells){
+							if(cell !== _tempcell){
+								//如果不是待处理单元格本身，记录单元格的可选数值
+								_tempOtherCellsArray.push(...cell.innerdata);
+							}
+						}
+						//清除重复添加的数值
+						_tempOtherCellsArray = Array.from(new Set(_tempOtherCellsArray));
+						
+						// 判断 x 是否在其他单元格的可选数值中
+						for(let x of _tempcell.innerdata){
+							if(_tempOtherCellsArray.indexOf(x) === -1){
+								console.log('区域中其他单元格的可选值', _tempOtherCellsArray, '单元格', i+1, '的:',x, "是唯一值");
+								// 处理单元格
+								this.sudoku_data[i].innerdata.splice(0);
+								this.sudoku_data[i].innerdata.push(x);
+							}
+						}
+					}
+				}
+			},
+			
+			FilterOnlyOne(){
+				// 如果某个单元格的可选值在行、列或是区域中是唯一的，则表示该单元格就是该值
+				this.filterOnlyOne_rows();
+				this.filterOnlyOne_cols();
+				this.filterOnlyOne_areas();
+			},
+			
 			//初始化9个行对象
 			initSudokuRows() {
+				//先清空数组
+				this.sudoku_rows.splice(0);
 				for (let row = 0; row < 9; row++) {
 					let _tempRow = {
 						locked: [], //该行已经被锁定的数据
@@ -172,12 +233,12 @@
 					_tempRow.locked = _tempRow.locked.filter(Boolean);
 					this.sudoku_rows.push(_tempRow);
 				}
-				//console.log(this.sudoku_rows);
-				//设置已锁定数值
 			},
 
 			//初始化9个列对象
 			initSudokuCols() {
+				//先清空数组
+				this.sudoku_cols.splice(0);
 				for (let col = 0; col < 9; col++) {
 					let _tempCol = {
 						locked: [], //该列已被锁定的数据
@@ -193,11 +254,12 @@
 					_tempCol.locked = _tempCol.locked.filter(Boolean);
 					this.sudoku_cols.push(_tempCol);
 				}
-				//console.log(this.sudoku_cols);
 			},
 
 			//初始化9个区域对象
 			initSudokuAreas() {
+				//先清空数组
+				this.sudoku_areas.splice(0);
 				for (let area_row = 0; area_row < 3; area_row++)
 					for (let area_col = 0; area_col < 3; area_col++) {
 						let _tempArea = {
@@ -215,7 +277,6 @@
 						_tempArea.locked = _tempArea.locked.filter(Boolean);
 						this.sudoku_areas.push(_tempArea);
 					}
-				//console.log(this.sudoku_areas);
 			},
 
 			//开始游戏
@@ -223,11 +284,15 @@
 				//进入作弊模式后，关闭作弊按钮，开始另外2个按钮
 				this.cheat = false;
 				
+				//初始化9个行对象
+				this.initSudokuRows();
+				//初始化9个列对象
+				this.initSudokuCols();
+				//初始化9个区域对象
+				this.initSudokuAreas();
+				
 				//对第个单元格的行，列，区域进行查找已锁定的数据
 				for (let i = 0; i < 81; i++) {
-					// console.log('1号单元格已锁定的  行  值：',this.sudoku_data[i].belongrow.locked);
-					// console.log('1号单元格已锁定的  列  值：',this.sudoku_data[i].belongcol.locked);
-					// console.log('1号单元格已锁定的 区域 值：',this.sudoku_data[i].belongarea.locked);
 					if (!this.sudoku_data[i].system) {
 						//对用户单元格进行处理
 						let _set_row = new Set(this.sudoku_data[i].belongrow.locked);
@@ -235,7 +300,6 @@
 						let _set_area = new Set(this.sudoku_data[i].belongarea.locked);
 						let _set_locked = new Set([..._set_row, ..._set_col, ..._set_area]);
 						let _set_unLocked = new Set([1, 2, 3, 4, 5, 6, 7, 8, 9].filter(x => !_set_locked.has(x)));
-						//console.log(_set_locked, _set_unLocked);
 						if(_set_unLocked.size === 1){
 							this.sudoku_data[i].userlocked = false;
 							this.sudoku_data[i].innerdata = Array.from(_set_unLocked);
@@ -246,9 +310,6 @@
 						}
 					}
 				}
-				// console.log('14号单元格添加锁定前 行:',this.sudoku_data[14].belongrow.locked);
-				// console.log('14号单元格添加锁定前 列:',this.sudoku_data[14].belongcol.locked);
-				// console.log('14号单元格添加锁定前区域:',this.sudoku_data[14].belongarea.locked);
 			},
 			
 			LockOnlyOne(){
@@ -272,9 +333,6 @@
 						this.sudoku_data[i].belongarea.locked = Array.from(new Set(this.sudoku_data[i].belongarea.locked))
 					}
 				}
-				// console.log('14号单元格添加锁定后 行:',this.sudoku_data[14].belongrow.locked);
-				// console.log('14号单元格添加锁定后 列:',this.sudoku_data[14].belongcol.locked);
-				// console.log('14号单元格添加锁定后区域:',this.sudoku_data[14].belongarea.locked);
 			},
 			
 			DuplicateRemoval(){
@@ -287,7 +345,6 @@
 						let _set_area = new Set(this.sudoku_data[i].belongarea.locked);
 						let _set_locked = new Set([..._set_row, ..._set_col, ..._set_area]);
 						let _set_unLocked = new Set([1, 2, 3, 4, 5, 6, 7, 8, 9].filter(x => !_set_locked.has(x)));
-						//console.log(_set_locked, _set_unLocked);
 						if(_set_unLocked.size === 1){
 							this.sudoku_data[i].userlocked = false;
 							this.sudoku_data[i].innerdata = Array.from(_set_unLocked);
@@ -302,15 +359,8 @@
 		},
 
 		created: function() {
-			//根据初始值，生成81个单元格对象放入sudoku_data中
-			//this.initSudokuData()
-			//初始化9个行对象
-			this.initSudokuRows();
-			//初始化9个列对象
-			this.initSudokuCols();
-			//初始化9个区域对象
-			this.initSudokuAreas();
-
+			//从题库中取题
+			this.gameStart();
 		},
 		components: {
 			HelloWorld,
@@ -351,9 +401,19 @@
 
 	.footer {
 		display: flex;
+		flex-wrap: wrap;
+		align-content: space-around;
 		justify-content: center;
 		align-items: center;
 		width: 100%;
-		height: 100px;
+		height: 80px;
+	}
+	
+	.footer .newgame {
+		width: 100%;
+	}
+	
+	.footer .cheat {
+		width: 100%;
 	}
 </style>
