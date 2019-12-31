@@ -23,6 +23,9 @@
 		<div class="footer">
 			<div class="newgame">
 				<button @click="gameStart()">新的游戏</button>
+				<button @click="userDefine()" v-if="!userDefineMode">自定义游戏</button>
+				<button @click="userDefineComplete()" v-else>自定义完成</button>
+				
 			</div>
 			<div class="cheat">
 				<template v-if="cheat">
@@ -48,20 +51,21 @@
 		data: function() {
 			return {
 				//初始值
+				userDefineMode: false,	//当前工作模式
 				cheat: true,		//显示作弊按钮
 				sudokuid: '',		//题号
 				//sudoku_array: [],	//系统给出的初始数据
 				
 				sudoku_array: [
-					0, 0, 2, 9, 0, 0, 0, 0, 0,
-					0, 1, 0, 0, 0, 6, 0, 7, 0,
-					0, 5, 0, 0, 8, 0, 2, 0, 0,
-					1, 0, 7, 0, 0, 0, 0, 0, 5,
-					0, 0, 6, 4, 0, 0, 7, 0, 0,
-					5, 0, 0, 0, 0, 3, 9, 0, 8,
-					0, 0, 5, 0, 0, 2, 0, 8, 0,
-					0, 9, 0, 5, 0, 0, 0, 2, 0,
-					0, 0, 0, 0, 0, 1, 4, 0, 0
+					0, 0, 8, 0, 7, 0, 4, 0, 0,
+					4, 2, 0, 0, 0, 0, 0, 9, 5,
+					0, 0, 0, 3, 0, 4, 0, 0, 0,
+					0, 7, 0, 0, 1, 0, 0, 8, 0,
+					0, 8, 0, 9, 4, 7, 0, 1, 0,
+					0, 5, 0, 0, 6, 0, 0, 7, 0,
+					0, 0, 0, 6, 0, 1, 0, 0, 0,
+					7, 3, 0, 0, 0, 0, 0, 2, 9,
+					0, 0, 5, 0, 3, 0, 8, 4, 0
 				],
 				
 				//9个行对象
@@ -104,6 +108,25 @@
 		},
 
 		methods: {
+			userDefine(){
+				this.sudoku_array = [
+					0, 0, 0, 0, 0, 0, 0, 0, 0,
+					0, 0, 0, 0, 0, 0, 0, 0, 0,
+					0, 0, 0, 0, 0, 0, 0, 0, 0,
+					0, 0, 0, 0, 0, 0, 0, 0, 0,
+					0, 0, 0, 0, 0, 0, 0, 0, 0,
+					0, 0, 0, 0, 0, 0, 0, 0, 0,
+					0, 0, 0, 0, 0, 0, 0, 0, 0,
+					0, 0, 0, 0, 0, 0, 0, 0, 0,
+					0, 0, 0, 0, 0, 0, 0, 0, 0
+				];
+				this.cheat = true;
+				this.userDefineMode = true;
+			},
+			userDefineComplete(){
+				this.cheat = false;
+				this.userDefineMode = false;
+			},
 			gameStart(){
 				this.$axios.get('http://192.168.108.79:8983/cgi-bin/getdata.py')
 				.then(response => {
@@ -360,7 +383,7 @@
 
 		created: function() {
 			//从题库中取题
-			this.gameStart();
+			//this.gameStart();
 		},
 		components: {
 			HelloWorld,
