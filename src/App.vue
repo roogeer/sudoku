@@ -124,8 +124,20 @@
 				this.userDefineMode = true;
 			},
 			userDefineComplete(){
-				this.cheat = false;
+				this.cheat = true;
 				this.userDefineMode = false;
+				for(let index=0; index<81; index++){
+					//console.log(index, this.sudoku_data[index].innerdata);
+					if(this.sudoku_data[index].innerdata.length!==0){
+						//console.log(index, this.sudoku_data[index].innerdata[0])
+						this.sudoku_array[index] = this.sudoku_data[index].innerdata[0]
+					}
+				}
+				console.log('this.sudoku_array', this.sudoku_array);
+				console.log('this.sudoku_data', this.sudoku_data);
+				console.log('this.sudoku_rows', this.sudoku_rows);
+				console.log('this.sudoku_cols', this.sudoku_cols);
+				console.log('this.sudoku_areas', this.sudoku_areas);
 			},
 			gameStart(){
 				this.$axios.get('http://192.168.108.79:8983/cgi-bin/getdata.py')
