@@ -124,20 +124,40 @@
 				this.userDefineMode = true;
 			},
 			userDefineComplete(){
+				console.log('this.sudoku_data before', this.sudoku_data);
 				this.cheat = true;
 				this.userDefineMode = false;
 				for(let index=0; index<81; index++){
 					//console.log(index, this.sudoku_data[index].innerdata);
 					if(this.sudoku_data[index].innerdata.length!==0){
 						//console.log(index, this.sudoku_data[index].innerdata[0])
-						this.sudoku_array[index] = this.sudoku_data[index].innerdata[0]
+						let _tmp = this.sudoku_data[index].innerdata[0];
+						this.sudoku_data[index].innerdata.splice(0);
+						this.sudoku_data[index].innerdata.push(_tmp);
+						this.sudoku_data[index].system = true;
+						this.sudoku_data[index].userlocked = false;
+						this.sudoku_data[index].belongrow = {}; //单元格所属的行
+						this.sudoku_data[index].belongcol = {}; //单元格所属的列
+						this.sudoku_data[index].belongarea = {}; //单元格所属的区域
+						
+						//this.sudoku_array[index] = _tmp;
+					}
+					else{
+						this.sudoku_data[index].innerdata.splice(0);
+						this.sudoku_data[index].system = false;
+						this.sudoku_data[index].userlocked = true;
+						this.sudoku_data[index].belongrow = {}; //单元格所属的行
+						this.sudoku_data[index].belongcol = {}; //单元格所属的列
+						this.sudoku_data[index].belongarea = {}; //单元格所属的区域
+						
+						//this.sudoku_array[index] = 0;
 					}
 				}
-				console.log('this.sudoku_array', this.sudoku_array);
-				console.log('this.sudoku_data', this.sudoku_data);
-				console.log('this.sudoku_rows', this.sudoku_rows);
-				console.log('this.sudoku_cols', this.sudoku_cols);
-				console.log('this.sudoku_areas', this.sudoku_areas);
+				//console.log('this.sudoku_array', this.sudoku_array);
+				console.log('this.sudoku_data after', this.sudoku_data);
+				// console.log('this.sudoku_rows', this.sudoku_rows);
+				// console.log('this.sudoku_cols', this.sudoku_cols);
+				// console.log('this.sudoku_areas', this.sudoku_areas);
 			},
 			gameStart(){
 				this.$axios.get('http://192.168.108.79:8983/cgi-bin/getdata.py')
