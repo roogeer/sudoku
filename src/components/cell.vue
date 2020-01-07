@@ -381,4 +381,8 @@
 		width: 20px;
 		height: 20px;
 	}
+	
+	.selected {
+		background-color: yellow;
+	}
 </style>

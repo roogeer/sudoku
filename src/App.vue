@@ -124,7 +124,6 @@
 				this.userDefineMode = true;
 			},
 			userDefineComplete(){
-				console.log('this.sudoku_data before', this.sudoku_data);
 				this.cheat = true;
 				this.userDefineMode = false;
 				for(let index=0; index<81; index++){
@@ -153,13 +152,9 @@
 						this.sudoku_array[index] = 0;
 					}
 				}
-				//console.log('this.sudoku_array', this.sudoku_array);
+
 				//将用户自定义的数据，存入浏览器，F5刷新时可取回
 				sessionStorage.setItem('userdefine', JSON.stringify(this.sudoku_array));
-				console.log(JSON.parse(sessionStorage.getItem('userdefine')));
-				// console.log('this.sudoku_rows', this.sudoku_rows);
-				// console.log('this.sudoku_cols', this.sudoku_cols);
-				// console.log('this.sudoku_areas', this.sudoku_areas);
 			},
 			gameStart(){
 				this.$axios.get('http://192.168.108.79:8983/cgi-bin/getdata.py')
