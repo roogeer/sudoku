@@ -140,7 +140,7 @@
 						this.sudoku_data[index].belongcol = {}; //单元格所属的列
 						this.sudoku_data[index].belongarea = {}; //单元格所属的区域
 						
-						//this.sudoku_array[index] = _tmp;
+						this.sudoku_array[index] = _tmp;
 					}
 					else{
 						this.sudoku_data[index].innerdata.splice(0);
@@ -150,11 +150,13 @@
 						this.sudoku_data[index].belongcol = {}; //单元格所属的列
 						this.sudoku_data[index].belongarea = {}; //单元格所属的区域
 						
-						//this.sudoku_array[index] = 0;
+						this.sudoku_array[index] = 0;
 					}
 				}
 				//console.log('this.sudoku_array', this.sudoku_array);
-				console.log('this.sudoku_data after', this.sudoku_data);
+				//将用户自定义的数据，存入浏览器，F5刷新时可取回
+				sessionStorage.setItem('userdefine', JSON.stringify(this.sudoku_array));
+				console.log(JSON.parse(sessionStorage.getItem('userdefine')));
 				// console.log('this.sudoku_rows', this.sudoku_rows);
 				// console.log('this.sudoku_cols', this.sudoku_cols);
 				// console.log('this.sudoku_areas', this.sudoku_areas);
@@ -414,8 +416,15 @@
 		},
 
 		created: function() {
-			//从题库中取题
-			//this.gameStart();
+			if(sessionStorage.getItem('userdefine')!==null){
+				console.log('有用户自定义的盘局');
+				this.sudoku_array = JSON.parse(sessionStorage.getItem('userdefine'));
+				console.log(this.sudoku_array);
+			}
+			// else{
+			// 	//从题库中取题
+			// 	//this.gameStart();				
+			// }
 		},
 		components: {
 			HelloWorld,
