@@ -90,7 +90,8 @@
 							userlocked: true,
 							belongrow: {}, //单元格所属的行
 							belongcol: {}, //单元格所属的列
-							belongarea: {} //单元格所属的区域
+							belongarea: {},//单元格所属的区域
+							selected: false //单元格是否被选中
 						});
 					} else {
 						_temp.push({
@@ -99,7 +100,8 @@
 							userlocked: false,
 							belongrow: {}, //单元格所属的行
 							belongcol: {}, //单元格所属的列
-							belongarea: {} //单元格所属的区域
+							belongarea: {}, //单元格所属的区域
+							selected: false //单元格是否被选中
 						})
 					}
 				}
@@ -138,6 +140,7 @@
 						this.sudoku_data[index].belongrow = {}; //单元格所属的行
 						this.sudoku_data[index].belongcol = {}; //单元格所属的列
 						this.sudoku_data[index].belongarea = {}; //单元格所属的区域
+						this.sudoku_data[index].selected = false;//单元格是否被选中
 						
 						this.sudoku_array[index] = _tmp;
 					}
@@ -148,6 +151,7 @@
 						this.sudoku_data[index].belongrow = {}; //单元格所属的行
 						this.sudoku_data[index].belongcol = {}; //单元格所属的列
 						this.sudoku_data[index].belongarea = {}; //单元格所属的区域
+						this.sudoku_data[index].selected = false;//单元格是否被选中
 						
 						this.sudoku_array[index] = 0;
 					}

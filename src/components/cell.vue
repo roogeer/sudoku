@@ -1,13 +1,13 @@
 <template>
 	<!--是系统提供的数据-->
-	<div v-if="this.cellnumber.system" class="container01" tabindex="0" @keyup="cellkeyup($event)">
-		<div class="area0">
+	<div v-if="this.cellnumber.system" class="container01"  tabindex="0" @keyup="cellkeyup($event)" @focus="cellclick(cellnumber)" @blur="cellblur(cellnumber)">
+		<div class="area0" :class="{'selected':cellnumber.selected}">
 			<span>{{this.cellnumber.innerdata[0]}}</span>
 		</div>
 	</div>
 	<!--用户数据，且锁定了唯一值-->
-	<div v-else-if="this.cellnumber.userlocked" class="container01" tabindex="0" @keyup="cellkeyup($event)">
-		<div class="areaUserlocked">
+	<div v-else-if="this.cellnumber.userlocked" class="container01"  tabindex="0" @keyup="cellkeyup($event)" @focus="cellclick(cellnumber)" @blur="cellblur(cellnumber)">
+		<div class="areaUserlocked" :class="{'selected':cellnumber.selected}">
 			<span>{{this.cellnumber.innerdata[0]}}</span>
 		</div>
 	</div>
@@ -57,6 +57,13 @@
 			},
 		},
 		methods: {
+			cellblur(blur_cell) {
+				console.log('blur',blur_cell);
+			},
+			cellclick(selected_cell) {
+				console.log(selected_cell);
+				selected_cell.selected = true;
+			},
 			cellkeyup(event) {
 				console.log(event);
 				switch (event.keyCode) {
