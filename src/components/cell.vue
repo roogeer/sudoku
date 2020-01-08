@@ -59,6 +59,7 @@
 		methods: {
 			cellblur(blur_cell) {
 				console.log('blur',blur_cell);
+				blur_cell.selected = false;
 			},
 			cellclick(selected_cell) {
 				console.log(selected_cell);
