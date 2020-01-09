@@ -166,10 +166,18 @@
 					this.cellsIrradiated.push(this.cellSelected.belongarea.cells[index]);
 				}
 				
-				//清除处理被辐射的行
-				for(let index=0; index<this.cellsSelected; index++){
-					
+				for(let index=0; index<this.cellsSelected.length; index++){
+					for(let i=0; i<9; i++){
+						//处理被辐射的行
+						this.cellsSelected[index].belongrow.cells[i].irradiated = true;
+						this.cellsIrradiated.push(this.cellsSelected[index].belongrow.cells[i]);
+						
+						//处理被辐射的列
+						this.cellsSelected[index].belongcol.cells[i].irradiated = true;
+						this.cellsIrradiated.push(this.cellsSelected[index].belongcol.cells[i]);
+					}
 				}
+
 			},
 			
 			userDefine(){
@@ -229,6 +237,10 @@
 					this.sudoku_array.splice(0);
 					this.sudoku_array.push(...response.data.sudokudata);
 					this.cheat = true;
+					
+					this.initSudokuRows();
+					this.initSudokuCols();
+					this.initSudokuAreas();
 				})
 			},
 			

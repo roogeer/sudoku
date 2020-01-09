@@ -1,12 +1,12 @@
 <template>
 	<!--是系统提供的数据-->
-	<div v-if="this.cellnumber.system" class="container01"  tabindex="0" @keyup="cellkeyup($event)" @focus="cellclick(cellnumber)" @blur="cellblur(cellnumber)">
+	<div v-if="this.cellnumber.system" class="container01"  tabindex="0" @keyup="cellkeyup($event)" @focus="cellclick($event, cellnumber)" @blur="cellblur($event, cellnumber)">
 		<div class="area0" :class="{'selected':cellnumber.selected,'irradiated':cellnumber.irradiated}">
 			<span>{{this.cellnumber.innerdata[0]}}</span>
 		</div>
 	</div>
 	<!--用户数据，且锁定了唯一值-->
-	<div v-else-if="this.cellnumber.userlocked" class="container01"  tabindex="0" @keyup="cellkeyup($event)" @focus="cellclick(cellnumber)" @blur="cellblur(cellnumber)">
+	<div v-else-if="this.cellnumber.userlocked" class="container01"  tabindex="0" @keyup="cellkeyup($event)" @focus="cellclick($event, cellnumber)" @blur="cellblur($event, cellnumber)">
 		<div class="areaUserlocked" :class="{'selected':cellnumber.selected,'irradiated':cellnumber.irradiated}">
 			<span>{{this.cellnumber.innerdata[0]}}</span>
 		</div>
@@ -57,12 +57,13 @@
 			},
 		},
 		methods: {
-			cellblur(blur_cell) {
-				console.log('blur',blur_cell);
+			cellblur(event, blur_cell) {
+				console.log('blur', event);
 				blur_cell.selected = false;
 			},
 			
-			cellclick(selected_cell) {
+			cellclick(event, selected_cell) {
+				console.log('focus', event);
 				selected_cell.selected = true;
 			
 				//通知父组件，被选中的数值
