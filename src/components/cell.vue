@@ -1,13 +1,13 @@
 <template>
 	<!--是系统提供的数据-->
 	<div v-if="this.cellnumber.system" class="container01"  tabindex="0" @keyup="cellkeyup($event)" @focus="cellclick(cellnumber)" @blur="cellblur(cellnumber)">
-		<div class="area0" :class="{'selected':cellnumber.selected}">
+		<div class="area0" :class="{'selected':cellnumber.selected,'irradiated':cellnumber.irradiated}">
 			<span>{{this.cellnumber.innerdata[0]}}</span>
 		</div>
 	</div>
 	<!--用户数据，且锁定了唯一值-->
 	<div v-else-if="this.cellnumber.userlocked" class="container01"  tabindex="0" @keyup="cellkeyup($event)" @focus="cellclick(cellnumber)" @blur="cellblur(cellnumber)">
-		<div class="areaUserlocked" :class="{'selected':cellnumber.selected}">
+		<div class="areaUserlocked" :class="{'selected':cellnumber.selected,'irradiated':cellnumber.irradiated}">
 			<span>{{this.cellnumber.innerdata[0]}}</span>
 		</div>
 	</div>
@@ -61,9 +61,12 @@
 				console.log('blur',blur_cell);
 				blur_cell.selected = false;
 			},
+			
 			cellclick(selected_cell) {
-				console.log(selected_cell);
 				selected_cell.selected = true;
+			
+				//通知父组件，被选中的数值
+				this.$emit('selectx', selected_cell);
 			},
 			cellkeyup(event) {
 				console.log(event);
@@ -388,6 +391,10 @@
 		line-height: 1.15;
 		width: 20px;
 		height: 20px;
+	}
+	
+	.irradiated {
+		background-color: #A9A9A9;
 	}
 	
 	.selected {

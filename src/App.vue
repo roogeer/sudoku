@@ -12,7 +12,7 @@
 						<div class="sudoku_area" :key="(index_area_row - 1) * 3 + (index_area_col -1 )">
 							<template v-for="row in 3">
 								<template v-for="col in 3">
-									<cell :initcellnumber="sudoku_data[(area_row - 1) * 27 + (area_col - 1) * 3 + (row -1) * 9 + (col - 1)]" :key="(area_row -1 ) * 27 + (area_col -1 ) * 3 + (row - 1) * 9 + (col - 1)" :id="(area_row - 1) * 27 + (area_col - 1) * 3 + (row -1) * 9 + col" />
+									<cell @selectx="handle_selectx" :initcellnumber="sudoku_data[(area_row - 1) * 27 + (area_col - 1) * 3 + (row -1) * 9 + (col - 1)]" :key="(area_row -1 ) * 27 + (area_col -1 ) * 3 + (row - 1) * 9 + (col - 1)" :id="(area_row - 1) * 27 + (area_col - 1) * 3 + (row -1) * 9 + col" />
 								</template>
 							</template>
 						</div>
@@ -75,7 +75,19 @@
 				sudoku_cols: [],
 
 				//9个区域对象
-				sudoku_areas: []
+				sudoku_areas: [],
+				
+				//当前被选中的数值
+				numberSelected: 0,
+				
+				//已被选中的cells
+				cellSelected: null,
+				
+				//将被选中的所有cells
+				cellsSelected: [],
+				
+				//当前被辐射到的cells
+				cellsIrradiated: []
 			};
 		},
 		
@@ -88,20 +100,22 @@
 							innerdata: [],
 							system: false,
 							userlocked: true,
-							belongrow: {}, //单元格所属的行
-							belongcol: {}, //单元格所属的列
-							belongarea: {},//单元格所属的区域
-							selected: false //单元格是否被选中
+							belongrow: {},		//单元格所属的行
+							belongcol: {},		//单元格所属的列
+							belongarea: {},		//单元格所属的区域
+							selected: false,	//单元格是否被选中
+							irradiated: false,	//单元格是否被辐射
 						});
 					} else {
 						_temp.push({
 							innerdata: [this.sudoku_array[i]],
 							system: true,
 							userlocked: false,
-							belongrow: {}, //单元格所属的行
-							belongcol: {}, //单元格所属的列
-							belongarea: {}, //单元格所属的区域
-							selected: false //单元格是否被选中
+							belongrow: {},		//单元格所属的行
+							belongcol: {},		//单元格所属的列
+							belongarea: {},		//单元格所属的区域
+							selected: false,	//单元格是否被选中
+							irradiated: false,	//单元格是否被辐射
 						})
 					}
 				}
@@ -110,6 +124,54 @@
 		},
 
 		methods: {
+			//处理cell组件中传回的数据
+			handle_selectx(selected_cell){
+				this.cellSelected = selected_cell;
+				this.numberSelected = selected_cell.innerdata[0];
+				console.log(this.numberSelected);
+				
+				//如果cell中的数值唯一，且与选中的数值相等，添加到cellsSelected数组中
+				for(let i = 0; i < this.cellsSelected.length; i++){
+					this.cellsSelected[i].selected = false;
+				}
+				
+				this.cellsSelected.splice(0);
+				
+				for(let index = 0; index < 81; index++){
+					if(this.sudoku_data[index].system || this.sudoku_data[index].userlocked ){
+						if(this.numberSelected!==undefined && this.sudoku_data[index].innerdata[0]===this.numberSelected){
+							console.log(this.sudoku_data[index].innerdata[0], this.numberSelected);
+							this.sudoku_data[index].selected = true;
+							this.cellsSelected.push(this.sudoku_data[index]);
+						}
+					}
+				}
+				console.log(this.cellsSelected);
+				this.processCellsIrradiated();
+			},
+			
+			//处理被辐射到的单元格
+			processCellsIrradiated(){
+				//处理被选中单元格的九宫格
+				//console.log('belongarea', this.cellSelected.belongarea);
+				
+				for(let i=0; i<this.cellsIrradiated.length; i++){
+					this.cellsIrradiated[i].irradiated = false;
+				}
+				
+				this.cellsIrradiated.splice(0);
+				
+				for(let index=0; index<9; index++){
+					this.cellSelected.belongarea.cells[index].irradiated = true;
+					this.cellsIrradiated.push(this.cellSelected.belongarea.cells[index]);
+				}
+				
+				//清除处理被辐射的行
+				for(let index=0; index<this.cellsSelected; index++){
+					
+				}
+			},
+			
 			userDefine(){
 				this.sudoku_array = [
 					0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -420,6 +482,9 @@
 				this.sudoku_array = JSON.parse(sessionStorage.getItem('userdefine'));
 				console.log(this.sudoku_array);
 			}
+			this.initSudokuRows();
+			this.initSudokuCols();
+			this.initSudokuAreas();
 			// else{
 			// 	//从题库中取题
 			// 	//this.gameStart();				
