@@ -12,7 +12,7 @@
 						<div class="sudoku_area" :key="(index_area_row - 1) * 3 + (index_area_col -1 )">
 							<template v-for="row in 3">
 								<template v-for="col in 3">
-									<cell @selectx="handle_selectx" :initcellnumber="sudoku_data[(area_row - 1) * 27 + (area_col - 1) * 3 + (row -1) * 9 + (col - 1)]" :key="(area_row -1 ) * 27 + (area_col -1 ) * 3 + (row - 1) * 9 + (col - 1)" :id="(area_row - 1) * 27 + (area_col - 1) * 3 + (row -1) * 9 + col" />
+									<cell @lostblur="handle_lostblur" @selectx="handle_selectx" :initcellnumber="sudoku_data[(area_row - 1) * 27 + (area_col - 1) * 3 + (row -1) * 9 + (col - 1)]" :key="(area_row -1 ) * 27 + (area_col -1 ) * 3 + (row - 1) * 9 + (col - 1)" :id="(area_row - 1) * 27 + (area_col - 1) * 3 + (row -1) * 9 + col" />
 								</template>
 							</template>
 						</div>
@@ -124,6 +124,20 @@
 		},
 
 		methods: {
+			//处理焦点丢失事件
+			handle_lostblur(){
+				//清理高亮cell
+				for(let i = 0; i < this.cellsSelected.length; i++){
+					this.cellsSelected[i].selected = false;
+				}
+				this.cellsSelected.splice(0);
+				
+				//清理被辐射的cell
+				for(let i=0; i<this.cellsIrradiated.length; i++){
+					this.cellsIrradiated[i].irradiated = false;
+				}
+				this.cellsIrradiated.splice(0);
+			},
 			//处理cell组件中传回的数据
 			handle_selectx(selected_cell){
 				this.cellSelected = selected_cell;

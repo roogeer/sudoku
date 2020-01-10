@@ -60,6 +60,9 @@
 			cellblur(event, blur_cell) {
 				console.log('blur', event);
 				blur_cell.selected = false;
+				
+				//通知父组件，焦点丢失
+				this.$emit('lostblur');
 			},
 			
 			cellclick(event, selected_cell) {
