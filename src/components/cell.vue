@@ -58,7 +58,7 @@
 		},
 		methods: {
 			cellblur(event, blur_cell) {
-				console.log('blur', event);
+				//console.log('blur', event);
 				blur_cell.selected = false;
 				
 				//通知父组件，焦点丢失
@@ -66,14 +66,14 @@
 			},
 			
 			cellclick(event, selected_cell) {
-				console.log('focus', event);
+				//console.log('focus', event);
 				selected_cell.selected = true;
 			
 				//通知父组件，被选中的数值
 				this.$emit('selectx', selected_cell);
 			},
 			cellkeyup(event) {
-				console.log(event);
+				//console.log(event);
 				switch (event.keyCode) {
 					case 13:	// 按下回车键，确定要填写的数据
 						{

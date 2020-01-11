@@ -142,7 +142,7 @@
 			handle_selectx(selected_cell){
 				this.cellSelected = selected_cell;
 				this.numberSelected = selected_cell.innerdata[0];
-				console.log(this.numberSelected);
+				//console.log(this.numberSelected);
 				
 				//如果cell中的数值唯一，且与选中的数值相等，添加到cellsSelected数组中
 				for(let i = 0; i < this.cellsSelected.length; i++){
@@ -154,13 +154,13 @@
 				for(let index = 0; index < 81; index++){
 					if(this.sudoku_data[index].system || this.sudoku_data[index].userlocked ){
 						if(this.numberSelected!==undefined && this.sudoku_data[index].innerdata[0]===this.numberSelected){
-							console.log(this.sudoku_data[index].innerdata[0], this.numberSelected);
+							//console.log(this.sudoku_data[index].innerdata[0], this.numberSelected);
 							this.sudoku_data[index].selected = true;
 							this.cellsSelected.push(this.sudoku_data[index]);
 						}
 					}
 				}
-				console.log(this.cellsSelected);
+				//console.log(this.cellsSelected);
 				this.processCellsIrradiated();
 			},
 			
@@ -240,6 +240,10 @@
 						this.sudoku_array[index] = 0;
 					}
 				}
+				
+				this.initSudokuRows();
+				this.initSudokuCols();
+				this.initSudokuAreas();
 
 				//将用户自定义的数据，存入浏览器，F5刷新时可取回
 				sessionStorage.setItem('userdefine', JSON.stringify(this.sudoku_array));
@@ -279,7 +283,7 @@
 						// 判断 x 是否在其他单元格的可选数值中
 						for(let x of _tempcell.innerdata){
 							if(_tempOtherCellsArray.indexOf(x) === -1){
-								console.log('行中其他单元格的可选值', _tempOtherCellsArray, '单元格', i+1, '的:',x, "是唯一值");
+								//console.log('行中其他单元格的可选值', _tempOtherCellsArray, '单元格', i+1, '的:',x, "是唯一值");
 								// 处理单元格
 								this.sudoku_data[i].innerdata.splice(0);
 								this.sudoku_data[i].innerdata.push(x);
@@ -310,7 +314,7 @@
 						// 判断 x 是否在其他单元格的可选数值中
 						for(let x of _tempcell.innerdata){
 							if(_tempOtherCellsArray.indexOf(x) === -1){
-								console.log('列中其他单元格的可选值', _tempOtherCellsArray, '单元格', i+1, '的:',x, "是唯一值");
+								//console.log('列中其他单元格的可选值', _tempOtherCellsArray, '单元格', i+1, '的:',x, "是唯一值");
 								// 处理单元格
 								this.sudoku_data[i].innerdata.splice(0);
 								this.sudoku_data[i].innerdata.push(x);
@@ -341,7 +345,7 @@
 						// 判断 x 是否在其他单元格的可选数值中
 						for(let x of _tempcell.innerdata){
 							if(_tempOtherCellsArray.indexOf(x) === -1){
-								console.log('区域中其他单元格的可选值', _tempOtherCellsArray, '单元格', i+1, '的:',x, "是唯一值");
+								//console.log('区域中其他单元格的可选值', _tempOtherCellsArray, '单元格', i+1, '的:',x, "是唯一值");
 								// 处理单元格
 								this.sudoku_data[i].innerdata.splice(0);
 								this.sudoku_data[i].innerdata.push(x);
@@ -504,9 +508,9 @@
 
 		created: function() {
 			if(sessionStorage.getItem('userdefine')!==null){
-				console.log('有用户自定义的盘局');
+				//console.log('有用户自定义的盘局');
 				this.sudoku_array = JSON.parse(sessionStorage.getItem('userdefine'));
-				console.log(this.sudoku_array);
+				//console.log(this.sudoku_array);
 			}
 			this.initSudokuRows();
 			this.initSudokuCols();
