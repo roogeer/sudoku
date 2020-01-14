@@ -318,7 +318,7 @@
 
 	.area1 {
 		text-align: center;
-		background-color: darkgray;
+		background-color: darkseagreen;
 		font-size: 18px;
 		line-height: 1.15;
 		width: 20px;
@@ -327,7 +327,7 @@
 
 	.area2 {
 		text-align: center;
-		background-color: wheat;
+		background-color: #8fd08f ;
 		font-size: 18px;
 		line-height: 1.15;
 		width: 20px;
@@ -336,7 +336,7 @@
 
 	.area3 {
 		text-align: center;
-		background-color: darkgray;
+		background-color: darkseagreen;
 		font-size: 18px;
 		line-height: 1.15;
 		width: 20px;
@@ -345,7 +345,7 @@
 
 	.area4 {
 		text-align: center;
-		background-color: wheat;
+		background-color: #8fd08f ;
 		font-size: 18px;
 		line-height: 1.15;
 		width: 20px;
@@ -354,7 +354,7 @@
 
 	.area5 {
 		text-align: center;
-		background-color: darkgray;
+		background-color: darkseagreen;
 		font-size: 18px;
 		line-height: 1.15;
 		width: 20px;
@@ -363,7 +363,7 @@
 
 	.area6 {
 		text-align: center;
-		background-color: wheat;
+		background-color: #8fd08f ;
 		font-size: 18px;
 		line-height: 1.15;
 		width: 20px;
@@ -372,7 +372,7 @@
 
 	.area7 {
 		text-align: center;
-		background-color: darkgray;
+		background-color: darkseagreen;
 		font-size: 18px;
 		line-height: 1.15;
 		width: 20px;
@@ -381,7 +381,7 @@
 
 	.area8 {
 		text-align: center;
-		background-color: wheat;
+		background-color: #8fd08f ;
 		font-size: 18px;
 		line-height: 1.15;
 		width: 20px;
@@ -390,7 +390,7 @@
 
 	.area9 {
 		text-align: center;
-		background-color: darkgray;
+		background-color: darkseagreen;
 		font-size: 18px;
 		line-height: 1.15;
 		width: 20px;

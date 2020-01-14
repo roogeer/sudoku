@@ -1,7 +1,7 @@
 <template>
 	<div id="app">
 		<!--<img alt="Vue logo" src="./assets/logo.png" />-->
-		<HelloWorld msg="Sudoku v0.2" />
+		<HelloWorld msg="Sudoku v0.3" />
 		<div class="hello">
 			<h3>#{{ sudokuid }}</h3>
 		</div>
