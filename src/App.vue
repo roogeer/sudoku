@@ -551,7 +551,7 @@
 		display: grid;
 		grid-template-columns: repeat(3, 180px);
 		grid-template-rows: repeat(3, 180px);
-		grid-gap: 12px 12px
+		grid-gap: 18px 18px
 	}
 
 	.sudoku_area {
