@@ -169,11 +169,11 @@
 				//处理被选中单元格的九宫格
 				//console.log('belongarea', this.cellSelected.belongarea);
 				
-				for(let i=0; i<this.cellsIrradiated.length; i++){
-					this.cellsIrradiated[i].irradiated = false;
-				}
+				// for(let i=0; i<this.cellsIrradiated.length; i++){
+				// 	this.cellsIrradiated[i].irradiated = false;
+				// }
 				
-				this.cellsIrradiated.splice(0);
+				//this.cellsIrradiated.splice(0);
 				
 				for(let index=0; index<9; index++){
 					this.cellSelected.belongarea.cells[index].irradiated = true;
@@ -182,6 +182,10 @@
 				
 				for(let index=0; index<this.cellsSelected.length; index++){
 					for(let i=0; i<9; i++){
+						//处理被辐射的区域
+						this.cellsSelected[index].belongarea.cells[i].irradiated = true;
+						this.cellsIrradiated.push(this.cellsSelected[index].belongarea.cells[i]);
+						
 						//处理被辐射的行
 						this.cellsSelected[index].belongrow.cells[i].irradiated = true;
 						this.cellsIrradiated.push(this.cellsSelected[index].belongrow.cells[i]);
