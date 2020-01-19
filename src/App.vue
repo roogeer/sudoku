@@ -12,7 +12,7 @@
 						<div class="sudoku_area" :key="(index_area_row - 1) * 3 + (index_area_col -1 )">
 							<template v-for="row in 3">
 								<template v-for="col in 3">
-									<cell @lostblur="handle_lostblur" @selectx="handle_selectx" :initcellnumber="sudoku_data[(area_row - 1) * 27 + (area_col - 1) * 3 + (row -1) * 9 + (col - 1)]" :key="(area_row -1 ) * 27 + (area_col -1 ) * 3 + (row - 1) * 9 + (col - 1)" :id="(area_row - 1) * 27 + (area_col - 1) * 3 + (row -1) * 9 + col" />
+									<cell @pressEnter="handle_pressEnter" @lostblur="handle_lostblur" @selectx="handle_selectx" :initcellnumber="sudoku_data[(area_row - 1) * 27 + (area_col - 1) * 3 + (row -1) * 9 + (col - 1)]" :key="(area_row -1 ) * 27 + (area_col -1 ) * 3 + (row - 1) * 9 + (col - 1)" :id="(area_row - 1) * 27 + (area_col - 1) * 3 + (row -1) * 9 + col" />
 								</template>
 							</template>
 						</div>
@@ -68,6 +68,8 @@
 					0, 0, 5, 0, 3, 0, 8, 4, 0
 				],
 				
+				sudoku_data: [],
+				
 				//9个行对象
 				sudoku_rows: [],
 
@@ -91,39 +93,47 @@
 			};
 		},
 		
-		computed:{
-			sudoku_data:function(){
-				let _temp = [];
-				for (let i = 0; i < this.sudoku_array.length; i++) {
-					if (0 === this.sudoku_array[i]) {
-						_temp.push({
-							innerdata: [],
-							system: false,
-							userlocked: true,
-							belongrow: {},		//单元格所属的行
-							belongcol: {},		//单元格所属的列
-							belongarea: {},		//单元格所属的区域
-							selected: false,	//单元格是否被选中
-							irradiated: false,	//单元格是否被辐射
-						});
-					} else {
-						_temp.push({
-							innerdata: [this.sudoku_array[i]],
-							system: true,
-							userlocked: false,
-							belongrow: {},		//单元格所属的行
-							belongcol: {},		//单元格所属的列
-							belongarea: {},		//单元格所属的区域
-							selected: false,	//单元格是否被选中
-							irradiated: false,	//单元格是否被辐射
-						})
-					}
-				}
-				return _temp;
-			}
-		},
+		// computed:{
+		// 	sudoku_data:function(){
+		// 		let _temp = [];
+		// 		for (let i = 0; i < this.sudoku_array.length; i++) {
+		// 			if (0 === this.sudoku_array[i]) {
+		// 				_temp.push({
+		// 					innerdata: [],
+		// 					system: false,
+		// 					userlocked: true,
+		// 					belongrow: {},		//单元格所属的行
+		// 					belongcol: {},		//单元格所属的列
+		// 					belongarea: {},		//单元格所属的区域
+		// 					selected: false,	//单元格是否被选中
+		// 					irradiated: false,	//单元格是否被辐射
+		// 				});
+		// 			} else {
+		// 				_temp.push({
+		// 					innerdata: [this.sudoku_array[i]],
+		// 					system: true,
+		// 					userlocked: false,
+		// 					belongrow: {},		//单元格所属的行
+		// 					belongcol: {},		//单元格所属的列
+		// 					belongarea: {},		//单元格所属的区域
+		// 					selected: false,	//单元格是否被选中
+		// 					irradiated: false,	//单元格是否被辐射
+		// 				})
+		// 			}
+		// 		}
+		// 		return _temp;
+		// 	}
+		// },
 
 		methods: {
+			//处理用户数据锁定事件
+			handle_pressEnter(){
+				this.LockOnlyOne();
+				// console.log('handle_pressEnter lockedCell', lockedCell);
+				// console.log('handle_pressEnter sudou_data ', this.sudoku_data[lockedCell.sn]);
+				// this.sudoku_data[lockedCell.sn] = lockedCell;
+			},
+			
 			//处理焦点丢失事件
 			handle_lostblur(){
 				//清理高亮cell
@@ -210,6 +220,7 @@
 					0, 0, 0, 0, 0, 0, 0, 0, 0,
 					0, 0, 0, 0, 0, 0, 0, 0, 0
 				];
+				this.initSudokuData();
 				this.cheat = true;
 				this.userDefineMode = true;
 			},
@@ -245,6 +256,7 @@
 					}
 				}
 				
+				this.initSudokuData();
 				this.initSudokuRows();
 				this.initSudokuCols();
 				this.initSudokuAreas();
@@ -259,6 +271,8 @@
 					this.sudoku_array.splice(0);
 					this.sudoku_array.push(...response.data.sudokudata);
 					this.cheat = true;
+					
+					this.initSudokuData();
 					
 					this.initSudokuRows();
 					this.initSudokuCols();
@@ -366,6 +380,40 @@
 				this.filterOnlyOne_areas();
 			},
 			
+			///初始化sudoku_data成员
+			initSudokuData(){
+				let _temp = [];
+				for (let i = 0; i < this.sudoku_array.length; i++) {
+					if (0 === this.sudoku_array[i]) {
+						_temp.push({
+							sn: i,
+							innerdata: [],
+							system: false,
+							userlocked: true,
+							belongrow: {},		//单元格所属的行
+							belongcol: {},		//单元格所属的列
+							belongarea: {},		//单元格所属的区域
+							selected: false,	//单元格是否被选中
+							irradiated: false,	//单元格是否被辐射
+						});
+					} else {
+						_temp.push({
+							sn: i,
+							innerdata: [this.sudoku_array[i]],
+							system: true,
+							userlocked: false,
+							belongrow: {},		//单元格所属的行
+							belongcol: {},		//单元格所属的列
+							belongarea: {},		//单元格所属的区域
+							selected: false,	//单元格是否被选中
+							irradiated: false,	//单元格是否被辐射
+						})
+					}
+				}
+				this.sudoku_data = _temp;
+				//return _temp;
+			},
+			
 			//初始化9个行对象
 			initSudokuRows() {
 				//先清空数组
@@ -433,19 +481,21 @@
 
 			//开始游戏
 			Cheat() {
-				//进入作弊模式后，关闭作弊按钮，开始另外2个按钮
+				//进入作弊模式后，关闭作弊按钮，开启另外2个按钮
 				this.cheat = false;
 				
 				//初始化9个行对象
 				this.initSudokuRows();
+				
 				//初始化9个列对象
 				this.initSudokuCols();
+				
 				//初始化9个区域对象
 				this.initSudokuAreas();
-				
-				//对第个单元格的行，列，区域进行查找已锁定的数据
+
+				//对每个单元格的行，列，区域进行查找已锁定的数据
 				for (let i = 0; i < 81; i++) {
-					if (!this.sudoku_data[i].system) {
+					if (!this.sudoku_data[i].system && this.sudoku_data[i].innerdata.length!==1) {
 						//对用户单元格进行处理
 						let _set_row = new Set(this.sudoku_data[i].belongrow.locked);
 						let _set_col = new Set(this.sudoku_data[i].belongcol.locked);
@@ -516,6 +566,8 @@
 				this.sudoku_array = JSON.parse(sessionStorage.getItem('userdefine'));
 				//console.log(this.sudoku_array);
 			}
+			this.initSudokuData();
+			
 			this.initSudokuRows();
 			this.initSudokuCols();
 			this.initSudokuAreas();
