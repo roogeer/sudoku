@@ -52,9 +52,9 @@
 			return {
 				//初始值
 				userDefineMode: false,	//当前工作模式
-				cheat: true,		//显示作弊按钮
-				sudokuid: '',		//题号
-				//sudoku_array: [],	//系统给出的初始数据
+				cheat: true,			//显示作弊按钮
+				sudokuid: '有点难',		//题号
+				//sudoku_array: [],		//系统给出的初始数据
 				
 				sudoku_array: [
 					0, 0, 8, 0, 7, 0, 4, 0, 0,
@@ -209,6 +209,7 @@
 			},
 			
 			userDefine(){
+				this.sudokuid = '自定义';
 				this.sudoku_array = [
 					0, 0, 0, 0, 0, 0, 0, 0, 0,
 					0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -262,6 +263,7 @@
 				this.initSudokuAreas();
 
 				//将用户自定义的数据，存入浏览器，F5刷新时可取回
+				sessionStorage.setItem('userdefineid', JSON.stringify('自定义'));
 				sessionStorage.setItem('userdefine', JSON.stringify(this.sudoku_array));
 			},
 			gameStart(){
@@ -277,6 +279,10 @@
 					this.initSudokuRows();
 					this.initSudokuCols();
 					this.initSudokuAreas();
+					
+					//将游戏数据，存入浏览器缓存，F5刷新时可取回
+					sessionStorage.setItem('userdefineid', JSON.stringify(this.sudokuid));
+					sessionStorage.setItem('userdefine', JSON.stringify(this.sudoku_array));
 				})
 			},
 			
@@ -563,6 +569,7 @@
 		created: function() {
 			if(sessionStorage.getItem('userdefine')!==null){
 				//console.log('有用户自定义的盘局');
+				this.sudokuid = JSON.parse(sessionStorage.getItem('userdefineid'));
 				this.sudoku_array = JSON.parse(sessionStorage.getItem('userdefine'));
 				//console.log(this.sudoku_array);
 			}
