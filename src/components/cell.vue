@@ -11,6 +11,12 @@
 			<span>{{this.cellnumber.innerdata[0]}}</span>
 		</div>
 	</div>
+	<!--用户数据，没有填入任何值-->
+	<div v-else-if="this.cellnumber.isEmpty" class="container01"  tabindex="0" @keyup="cellkeyup($event)" @focus="cellclick($event, cellnumber)" @blur="cellblur($event, cellnumber)">
+		<div class="areaUserlocked" :class="{'selected':cellnumber.selected,'irradiated':cellnumber.irradiated}">
+			<span>{{this.cellnumber.innerdata[0]}}</span>
+		</div>
+	</div>
 	<!--用户数据，没有锁定唯一值，数据按九宫格展示-->
 	<div v-else class="container" tabindex="0" @keyup="cellkeyup($event)">
 		<div class="area1">
@@ -88,7 +94,8 @@
 						{
 							if(!this.cellnumber.system){
 								this.cellnumber.innerdata = [];
-								this.cellnumber.userlocked = true;
+								this.cellnumber.userlocked = false;
+								this.cellnumber.isEmpty = true;
 							}
 							break;
 						}
@@ -161,11 +168,14 @@
 									//添加数值
 									this.cellnumber.innerdata.push(x);
 									this.cellnumber.userlocked = false;
+									this.cellnumber.isEmpty = false;
 								} else {
 									//删除数值
 									this.cellnumber.innerdata.splice(this.cellnumber.innerdata.indexOf(x), 1);
 									if(this.cellnumber.innerdata.length===0){
-										this.cellnumber.userlocked = true;
+										//this.cellnumber.userlocked = true;
+										this.cellnumber.userlocked = false;
+										this.cellnumber.isEmpty = true
 									}
 								}
 							}

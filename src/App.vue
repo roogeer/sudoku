@@ -396,10 +396,11 @@
 				for (let i = 0; i < this.sudoku_array.length; i++) {
 					if (0 === this.sudoku_array[i]) {
 						_temp.push({
-							sn: i,
-							innerdata: [],
-							system: false,
-							userlocked: true,
+							sn: i,				//单元格序号
+							innerdata: [],		//填入的可选数值
+							system: false,		//系统给定的提示数值
+							userlocked: false,	//用户填入唯一数值，并确定
+							isEmpty: true,		//没有填入任何数值
 							belongrow: {},		//单元格所属的行
 							belongcol: {},		//单元格所属的列
 							belongarea: {},		//单元格所属的区域
@@ -412,6 +413,7 @@
 							innerdata: [this.sudoku_array[i]],
 							system: true,
 							userlocked: false,
+							isEmpty: false,		//没有填入任何数值
 							belongrow: {},		//单元格所属的行
 							belongcol: {},		//单元格所属的列
 							belongarea: {},		//单元格所属的区域
@@ -514,10 +516,12 @@
 						let _set_unLocked = new Set([1, 2, 3, 4, 5, 6, 7, 8, 9].filter(x => !_set_locked.has(x)));
 						if(_set_unLocked.size === 1){
 							this.sudoku_data[i].userlocked = false;
+							this.sudoku_data[i].isEmpty = false;
 							this.sudoku_data[i].innerdata = Array.from(_set_unLocked);
 						}
 						else {
 							this.sudoku_data[i].userlocked = false;
+							this.sudoku_data[i].isEmpty = false;
 							this.sudoku_data[i].innerdata = Array.from(_set_unLocked);
 						}
 					}
