@@ -5,7 +5,7 @@
 		<div class="hello">
 			<h3>#{{ sudokuid }}</h3>
 		</div>
-		<div class="game">
+		<div class="game reflect">
 			<div class="sudoku">
 				<template v-for="(area_row, index_area_row) in 3">
 					<template v-for="(area_col, index_area_col) in 3">
@@ -661,5 +661,10 @@
 	
 	.footer .cheat {
 		width: 100%;
+	}
+	
+	.reflect{
+        width: 100%;
+        -webkit-box-reflect: below 20px -webkit-linear-gradient(transparent,transparent 90%,rgba(255, 255, 255, .3));
 	}
 </style>
