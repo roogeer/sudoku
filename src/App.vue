@@ -20,21 +20,25 @@
 				</template>
 			</div>
 		</div>
+		<div style="height: 30px;"></div>
 		<div class="footer">
 			<div class="newgame">
-				<button @click="gameStart()">新的游戏</button>
+				<button @click="gameStart()" v-if="!userDefineMode">新的游戏</button>
+				<button @click="gameReStart()" v-if="!userDefineMode">重新开始</button>
 				<button @click="userDefine()" v-if="!userDefineMode">自定义游戏</button>
 				<button @click="userDefineComplete()" v-else>自定义完成</button>
 				
 			</div>
 			<div class="cheat">
-				<template v-if="cheat">
-					<button @click="Cheat()">开始作弊</button>
-				</template>
-				<template v-else>
-					<button @click="LockOnlyOne()">锁定唯一值</button>
-					<button @click="DuplicateRemoval()">多值去重</button>
-					<button @click="FilterOnlyOne()">筛选唯一值</button>
+				<template v-if="!userDefineMode">
+					<template v-if="cheat">
+						<button @click="Cheat()">开始作弊</button>
+					</template>
+					<template v-else>
+						<button @click="LockOnlyOne()">锁定唯一值</button>
+						<button @click="DuplicateRemoval()">多值去重</button>
+						<button @click="FilterOnlyOne()">筛选唯一值</button>
+					</template>
 				</template>
 			</div>
 
@@ -563,21 +567,38 @@
 						}
 					}
 				}
+			},
+			
+			gameReStart(){
+				if(sessionStorage.getItem('userdefine')!==null){
+					//console.log('有用户自定义的盘局');
+					this.sudokuid = JSON.parse(sessionStorage.getItem('userdefineid'));
+					this.sudoku_array = JSON.parse(sessionStorage.getItem('userdefine'));
+					//console.log(this.sudoku_array);
+				}
+				this.initSudokuData();
+				this.initSudokuRows();
+				this.initSudokuCols();
+				this.initSudokuAreas();
+				
+				this.cheat = true;
 			}
 		},
 
 		created: function() {
-			if(sessionStorage.getItem('userdefine')!==null){
-				//console.log('有用户自定义的盘局');
-				this.sudokuid = JSON.parse(sessionStorage.getItem('userdefineid'));
-				this.sudoku_array = JSON.parse(sessionStorage.getItem('userdefine'));
-				//console.log(this.sudoku_array);
-			}
-			this.initSudokuData();
+			this.gameReStart();
+			// if(sessionStorage.getItem('userdefine')!==null){
+			// 	//console.log('有用户自定义的盘局');
+			// 	this.sudokuid = JSON.parse(sessionStorage.getItem('userdefineid'));
+			// 	this.sudoku_array = JSON.parse(sessionStorage.getItem('userdefine'));
+			// 	//console.log(this.sudoku_array);
+			// }
+			// this.initSudokuData();
 			
-			this.initSudokuRows();
-			this.initSudokuCols();
-			this.initSudokuAreas();
+			// this.initSudokuRows();
+			// this.initSudokuCols();
+			// this.initSudokuAreas();
+			
 			// else{
 			// 	//从题库中取题
 			// 	//this.gameStart();				
