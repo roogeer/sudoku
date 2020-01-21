@@ -1,7 +1,7 @@
 <template>
 	<div id="app">
 		<!--<img alt="Vue logo" src="./assets/logo.png" />-->
-		<HelloWorld msg="Sudoku v0.5" />
+		<HelloWorld msg="Sudoku v0.6" />
 		<div class="hello">
 			<h3>#{{ sudokuid }}</h3>
 		</div>
@@ -22,25 +22,28 @@
 		</div>
 		<div style="height: 120px;"></div>
 		<div class="footer">
-			<div class="newgame">
-				<button @click="gameStart()" v-if="!userDefineMode" class="button black red">新的游戏</button>
-				<button @click="gameReStart()" v-if="!userDefineMode" class="button black green">重新开始</button>
-				<button @click="userDefine()" v-if="!userDefineMode" class="button black blue">自定义游戏</button>
-				<button @click="userDefineComplete()" v-else class="button black blue">自定义完成</button>
-			</div>
-			<div class="cheat">
-				<template v-if="!userDefineMode">
-					<template v-if="cheat">
-						<button @click="Cheat()" class="button black tags">开始作弊</button>
+			<div style="width: 25%" />
+			<div style="width: 50%" class="footer content">
+				<div class="newgame">
+					<button @click="gameStart()" v-if="!userDefineMode" class="button black red">新的游戏</button>
+					<button @click="gameReStart()" v-if="!userDefineMode" class="button black green">重新开始</button>
+					<button @click="userDefine()" v-if="!userDefineMode" class="button black blue">自定义游戏</button>
+					<button @click="userDefineComplete()" v-else class="button black blue">自定义完成</button>
+				</div>
+				<div class="cheat">
+					<template v-if="!userDefineMode">
+						<template v-if="cheat">
+							<button @click="Cheat()" class="button black tags">开始作弊</button>
+						</template>
+						<template v-else>
+							<button @click="LockOnlyOne()" class="button black tags">锁定唯一值</button>
+							<button @click="DuplicateRemoval()" class="button black tags">多值去重</button>
+							<button @click="FilterOnlyOne()" class="button black tags">筛选唯一值</button>
+						</template>
 					</template>
-					<template v-else>
-						<button @click="LockOnlyOne()" class="button black tags">锁定唯一值</button>
-						<button @click="DuplicateRemoval()" class="button black tags">多值去重</button>
-						<button @click="FilterOnlyOne()" class="button black tags">筛选唯一值</button>
-					</template>
-				</template>
+				</div>
 			</div>
-
+			<div style="width: 25%" />
 		</div>
 	</div>
 </template>
@@ -595,6 +598,18 @@
 		align-items: center;
 		width: 100%;
 		height: 80px;
+	}
+	
+	.footer.content{
+		opacity: 0;
+		transition:opacity 2s;
+		-moz-transition:opacity 2s;		/* Firefox 4 */
+		-webkit-transition:opacity 2s;	/* Safari and Chrome */
+		-o-transition:opacity 2s;		/* Opera */		
+	}
+	
+	.footer.content:hover{
+		opacity: 1;
 	}
 	
 	.footer .newgame {
