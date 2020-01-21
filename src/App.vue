@@ -356,7 +356,7 @@
 						_temp.push({
 							sn: i,				//单元格序号
 							innerdata: [],		//填入的可选数值
-							system: false,		//系统给定的提示数值
+							system: false,		//系统给定了提示数值
 							userlocked: false,	//用户填入唯一数值，并确定
 							isEmpty: true,		//没有填入任何数值
 							belongrow: {},		//单元格所属的行
@@ -367,10 +367,10 @@
 						});
 					} else {
 						_temp.push({
-							sn: i,
+							sn: i,				//单元格序号
 							innerdata: [this.sudoku_array[i]],
-							system: true,
-							userlocked: false,
+							system: true,		//系统给定了提示数值
+							userlocked: false,	//用户填入唯一数值，并确定
 							isEmpty: false,		//没有填入任何数值
 							belongrow: {},		//单元格所属的行
 							belongcol: {},		//单元格所属的列
