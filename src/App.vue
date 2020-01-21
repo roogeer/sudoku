@@ -1,7 +1,7 @@
 <template>
 	<div id="app">
 		<!--<img alt="Vue logo" src="./assets/logo.png" />-->
-		<HelloWorld msg="Sudoku v0.4" />
+		<HelloWorld msg="Sudoku v0.5" />
 		<div class="hello">
 			<h3>#{{ sudokuid }}</h3>
 		</div>
@@ -20,24 +20,23 @@
 				</template>
 			</div>
 		</div>
-		<div style="height: 30px;"></div>
+		<div style="height: 120px;"></div>
 		<div class="footer">
 			<div class="newgame">
-				<button @click="gameStart()" v-if="!userDefineMode">新的游戏</button>
-				<button @click="gameReStart()" v-if="!userDefineMode">重新开始</button>
-				<button @click="userDefine()" v-if="!userDefineMode">自定义游戏</button>
-				<button @click="userDefineComplete()" v-else>自定义完成</button>
-				
+				<button @click="gameStart()" v-if="!userDefineMode" class="button black red">新的游戏</button>
+				<button @click="gameReStart()" v-if="!userDefineMode" class="button black green">重新开始</button>
+				<button @click="userDefine()" v-if="!userDefineMode" class="button black blue">自定义游戏</button>
+				<button @click="userDefineComplete()" v-else class="button black blue">自定义完成</button>
 			</div>
 			<div class="cheat">
 				<template v-if="!userDefineMode">
 					<template v-if="cheat">
-						<button @click="Cheat()">开始作弊</button>
+						<button @click="Cheat()" class="button black tags">开始作弊</button>
 					</template>
 					<template v-else>
-						<button @click="LockOnlyOne()">锁定唯一值</button>
-						<button @click="DuplicateRemoval()">多值去重</button>
-						<button @click="FilterOnlyOne()">筛选唯一值</button>
+						<button @click="LockOnlyOne()" class="button black tags">锁定唯一值</button>
+						<button @click="DuplicateRemoval()" class="button black tags">多值去重</button>
+						<button @click="FilterOnlyOne()" class="button black tags">筛选唯一值</button>
 					</template>
 				</template>
 			</div>
@@ -97,38 +96,6 @@
 			};
 		},
 		
-		// computed:{
-		// 	sudoku_data:function(){
-		// 		let _temp = [];
-		// 		for (let i = 0; i < this.sudoku_array.length; i++) {
-		// 			if (0 === this.sudoku_array[i]) {
-		// 				_temp.push({
-		// 					innerdata: [],
-		// 					system: false,
-		// 					userlocked: true,
-		// 					belongrow: {},		//单元格所属的行
-		// 					belongcol: {},		//单元格所属的列
-		// 					belongarea: {},		//单元格所属的区域
-		// 					selected: false,	//单元格是否被选中
-		// 					irradiated: false,	//单元格是否被辐射
-		// 				});
-		// 			} else {
-		// 				_temp.push({
-		// 					innerdata: [this.sudoku_array[i]],
-		// 					system: true,
-		// 					userlocked: false,
-		// 					belongrow: {},		//单元格所属的行
-		// 					belongcol: {},		//单元格所属的列
-		// 					belongarea: {},		//单元格所属的区域
-		// 					selected: false,	//单元格是否被选中
-		// 					irradiated: false,	//单元格是否被辐射
-		// 				})
-		// 			}
-		// 		}
-		// 		return _temp;
-		// 	}
-		// },
-
 		methods: {
 			//处理用户数据锁定事件
 			handle_pressEnter(){
@@ -180,15 +147,6 @@
 			
 			//处理被辐射到的单元格
 			processCellsIrradiated(){
-				//处理被选中单元格的九宫格
-				//console.log('belongarea', this.cellSelected.belongarea);
-				
-				// for(let i=0; i<this.cellsIrradiated.length; i++){
-				// 	this.cellsIrradiated[i].irradiated = false;
-				// }
-				
-				//this.cellsIrradiated.splice(0);
-				
 				for(let index=0; index<9; index++){
 					this.cellSelected.belongarea.cells[index].irradiated = true;
 					this.cellsIrradiated.push(this.cellSelected.belongarea.cells[index]);
@@ -591,22 +549,6 @@
 
 		created: function() {
 			this.gameReStart();
-			// if(sessionStorage.getItem('userdefine')!==null){
-			// 	//console.log('有用户自定义的盘局');
-			// 	this.sudokuid = JSON.parse(sessionStorage.getItem('userdefineid'));
-			// 	this.sudoku_array = JSON.parse(sessionStorage.getItem('userdefine'));
-			// 	//console.log(this.sudoku_array);
-			// }
-			// this.initSudokuData();
-			
-			// this.initSudokuRows();
-			// this.initSudokuCols();
-			// this.initSudokuAreas();
-			
-			// else{
-			// 	//从题库中取题
-			// 	//this.gameStart();				
-			// }
 		},
 		components: {
 			HelloWorld,
@@ -667,4 +609,107 @@
         width: 100%;
         -webkit-box-reflect: below 20px -webkit-linear-gradient(transparent,transparent 90%,rgba(255, 255, 255, .3));
 	}
+	
+    .button{
+        width: 120px;
+        line-height: 28px;
+        text-align: center;
+        font-weight: bold;
+        color: #aaaaaa;
+        text-shadow:1px 1px 1px #333;
+        border-radius: 5px;
+        margin:0 10px 20px 10px;
+        position: relative;
+        overflow: hidden;
+    }
+    .button.black{
+        border:1px solid #333;
+        box-shadow: 0 1px 2px #8b8b8b inset,0 -1px 0 #3d3d3d inset,0 -2px 3px #8b8b8b inset;
+        background: -webkit-linear-gradient(top,#656565,#4c4c4c);
+        background: -moz-linear-gradient(top,#656565,#4a4a4a);
+        background: linear-gradient(top,#656565,#4a4a4a);
+    }
+    .black.tags:after{
+        background: #333;
+        border:2px solid #777;
+    }
+    .tags:after{
+        font-weight: normal;
+        position: absolute;
+        display: inline-block;
+        content: "sudoku";
+        top:-3px;
+        right: -33px;
+        color: #fff;
+        text-shadow:none;
+        width: 85px;
+        height:25px;
+        line-height: 28px;
+        -webkit-transform:rotate(45deg) scale(.7,.7);
+        -moz-transform:rotate(45deg) scale(.7,.7);
+        transform:rotate(45deg) scale(.7,.7);
+    }
+	
+    .black.red:after{
+        background: #b11a1a;
+        border:2px solid #777;
+    }
+    .red:after{
+        font-weight: normal;
+        position: absolute;
+        display: inline-block;
+        content: "sudoku";
+        top:-3px;
+        right: -33px;
+        color: #fff;
+        text-shadow:none;
+        width: 85px;
+        height:25px;
+        line-height: 28px;
+        -webkit-transform:rotate(45deg) scale(.7,.7);
+        -moz-transform:rotate(45deg) scale(.7,.7);
+        transform:rotate(45deg) scale(.7,.7);
+    }
+	
+    .black.blue:after{
+        background: #1a1ab1;
+        border:2px solid #777;
+    }
+    .blue:after{
+        font-weight: normal;
+        position: absolute;
+        display: inline-block;
+        content: "sudoku";
+        top:-3px;
+        right: -33px;
+        color: #fff;
+        text-shadow:none;
+        width: 85px;
+        height:25px;
+        line-height: 28px;
+        -webkit-transform:rotate(45deg) scale(.7,.7);
+        -moz-transform:rotate(45deg) scale(.7,.7);
+        transform:rotate(45deg) scale(.7,.7);
+    }
+	
+    .black.green:after{
+        background: #1ab11a;
+        border:2px solid #777;
+    }
+    .green:after{
+        font-weight: normal;
+        position: absolute;
+        display: inline-block;
+        content: "sudoku";
+        top:-3px;
+        right: -33px;
+        color: #fff;
+        text-shadow:none;
+        width: 85px;
+        height:25px;
+        line-height: 28px;
+        -webkit-transform:rotate(45deg) scale(.7,.7);
+        -moz-transform:rotate(45deg) scale(.7,.7);
+        transform:rotate(45deg) scale(.7,.7);
+    }
 </style>
