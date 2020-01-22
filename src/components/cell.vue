@@ -86,6 +86,7 @@
 							if (!this.cellnumber.system && this.cellnumber.innerdata.length === 1) {
 								//如果是用户数据部分，且只有唯一数据，表示用户准备锁定该单元格
 								this.cellnumber.userlocked = true;
+								this.cellnumber.isEmpty = false;
 								this.$emit('pressEnter', this.cellnumber);
 							}
 							break;

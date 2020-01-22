@@ -101,11 +101,21 @@
 		
 		methods: {
 			//处理用户数据锁定事件
-			handle_pressEnter(){
-				this.LockOnlyOne();
-				// console.log('handle_pressEnter lockedCell', lockedCell);
-				// console.log('handle_pressEnter sudou_data ', this.sudoku_data[lockedCell.sn]);
-				// this.sudoku_data[lockedCell.sn] = lockedCell;
+			handle_pressEnter(cell){
+				//更新单元格的 行 锁定值列表
+				cell.belongrow.locked.push(cell.innerdata[0]);
+				//清除重复添加的数值
+				cell.belongrow.locked = Array.from(new Set(cell.belongrow.locked))
+
+				//更新单元格的 列 锁定值列表
+				cell.belongcol.locked.push(cell.innerdata[0]);
+				//清除重复添加的数值
+				cell.belongcol.locked = Array.from(new Set(cell.belongcol.locked))
+
+				//更新单元格的 区域 锁定值列表
+				cell.belongarea.locked.push(cell.innerdata[0]);
+				//清除重复添加的数值
+				cell.belongarea.locked = Array.from(new Set(cell.belongarea.locked))
 			},
 			
 			//处理焦点丢失事件
@@ -602,10 +612,10 @@
 	
 	.footer.content{
 		opacity: 0;
-		transition:opacity 2s;
-		-moz-transition:opacity 2s;		/* Firefox 4 */
-		-webkit-transition:opacity 2s;	/* Safari and Chrome */
-		-o-transition:opacity 2s;		/* Opera */		
+		transition:opacity 3s;
+		-moz-transition:opacity 3s;		/* Firefox 4 */
+		-webkit-transition:opacity 3s;	/* Safari and Chrome */
+		-o-transition:opacity 3s;		/* Opera */		
 	}
 	
 	.footer.content:hover{
