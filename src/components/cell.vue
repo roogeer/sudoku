@@ -83,7 +83,8 @@
 				switch (event.keyCode) {
 					case 13:	// 按下回车键，确定要填写的数据
 						{
-							if (!this.cellnumber.system && this.cellnumber.innerdata.length === 1) {
+							//非自定义模式状态，非系统单元格，用户单元格只有一个数值
+							if (!this.cellnumber.isUserDefMode && !this.cellnumber.system && this.cellnumber.innerdata.length === 1) {
 								//如果是用户数据部分，且只有唯一数据，表示用户准备锁定该单元格
 								this.cellnumber.userlocked = true;
 								this.cellnumber.isEmpty = false;
@@ -163,20 +164,28 @@
 					case 104:
 					case 105:
 						{
-							if (!this.cellnumber.system) {
-								let x = parseInt(event.key);
-								if (this.cellnumber.innerdata.indexOf(x) === -1) {
-									//添加数值
-									this.cellnumber.innerdata.push(x);
-									this.cellnumber.userlocked = false;
-									this.cellnumber.isEmpty = false;
-								} else {
-									//删除数值
-									this.cellnumber.innerdata.splice(this.cellnumber.innerdata.indexOf(x), 1);
-									if(this.cellnumber.innerdata.length===0){
-										//this.cellnumber.userlocked = true;
+							//处理自定义模式时的键盘操作
+							if(this.cellnumber.isUserDefMode){
+								this.cellnumber.innerdata.splice(0, 1, parseInt(event.key));
+								this.cellnumber.userlocked = true;
+								this.cellnumber.isEmpty = false;
+							}
+							else{
+								if (!this.cellnumber.system) {
+									let x = parseInt(event.key);
+									if (this.cellnumber.innerdata.indexOf(x) === -1) {
+										//添加数值
+										this.cellnumber.innerdata.push(x);
 										this.cellnumber.userlocked = false;
-										this.cellnumber.isEmpty = true
+										this.cellnumber.isEmpty = false;
+									} else {
+										//删除数值
+										this.cellnumber.innerdata.splice(this.cellnumber.innerdata.indexOf(x), 1);
+										if(this.cellnumber.innerdata.length===0){
+											//this.cellnumber.userlocked = true;
+											this.cellnumber.userlocked = false;
+											this.cellnumber.isEmpty = true
+										}
 									}
 								}
 							}

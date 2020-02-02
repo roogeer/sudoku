@@ -136,7 +136,7 @@
 			handle_selectx(selected_cell){
 				this.cellSelected = selected_cell;
 				this.numberSelected = selected_cell.innerdata[0];
-				//console.log(this.numberSelected);
+				//console.log('this.numberSelected is: ', this.numberSelected);
 				
 				//如果cell中的数值唯一，且与选中的数值相等，添加到cellsSelected数组中
 				for(let i = 0; i < this.cellsSelected.length; i++){
@@ -148,14 +148,18 @@
 				for(let index = 0; index < 81; index++){
 					if(this.sudoku_data[index].system || this.sudoku_data[index].userlocked ){
 						if(this.numberSelected!==undefined && this.sudoku_data[index].innerdata[0]===this.numberSelected){
-							//console.log(this.sudoku_data[index].innerdata[0], this.numberSelected);
 							this.sudoku_data[index].selected = true;
 							this.cellsSelected.push(this.sudoku_data[index]);
+							
+							//当所选单元格为确定的唯一值时，进行辐射处理
+							if(!this.userDefineMode){
+								//非自定义模式时，才进行辐射操作
+								this.processCellsIrradiated();
+							}
 						}
 					}
 				}
-				//console.log(this.cellsSelected);
-				this.processCellsIrradiated();
+				//this.processCellsIrradiated();
 			},
 			
 			//处理被辐射到的单元格
@@ -164,7 +168,6 @@
 					this.cellSelected.belongarea.cells[index].irradiated = true;
 					this.cellsIrradiated.push(this.cellSelected.belongarea.cells[index]);
 				}
-				
 				for(let index=0; index<this.cellsSelected.length; index++){
 					for(let i=0; i<9; i++){
 						//处理被辐射的区域
@@ -197,6 +200,10 @@
 					0, 0, 0, 0, 0, 0, 0, 0, 0
 				];
 				this.initSudokuData();
+				//所有单元格进入自定义模式状态
+				for(let index = 0; index < this.sudoku_data.length; index++){
+					this.sudoku_data[index].isUserDefMode = true;
+				}
 				this.cheat = true;
 				this.userDefineMode = true;
 			},
@@ -204,9 +211,9 @@
 				this.cheat = true;
 				this.userDefineMode = false;
 				for(let index=0; index<81; index++){
-					//console.log(index, this.sudoku_data[index].innerdata);
+					//单元格的自定义格式标识复位
+					this.sudoku_data[index].isUserDefMode = false;
 					if(this.sudoku_data[index].innerdata.length!==0){
-						//console.log(index, this.sudoku_data[index].innerdata[0])
 						let _tmp = this.sudoku_data[index].innerdata[0];
 						this.sudoku_data[index].innerdata.splice(0);
 						this.sudoku_data[index].innerdata.push(_tmp);
@@ -231,7 +238,7 @@
 						this.sudoku_array[index] = 0;
 					}
 				}
-				
+
 				this.initSudokuData();
 				this.initSudokuRows();
 				this.initSudokuCols();
@@ -243,6 +250,7 @@
 			},
 			gameStart(){
 				this.$axios.get('http://192.168.108.79:8983/cgi-bin/getdata.py')
+				//this.$axios.get('https://www.roogeer.com/cgi-bin/getdata.py')
 				.then(response => {
 					this.sudokuid = response.data.sudokuid;
 					this.sudoku_array.splice(0);
@@ -367,20 +375,22 @@
 				for (let i = 0; i < this.sudoku_array.length; i++) {
 					if (0 === this.sudoku_array[i]) {
 						_temp.push({
-							sn: i,				//单元格序号
-							innerdata: [],		//填入的可选数值
-							system: false,		//系统给定了提示数值
-							userlocked: false,	//用户填入唯一数值，并确定
-							isEmpty: true,		//没有填入任何数值
-							belongrow: {},		//单元格所属的行
-							belongcol: {},		//单元格所属的列
-							belongarea: {},		//单元格所属的区域
-							selected: false,	//单元格是否被选中
-							irradiated: false,	//单元格是否被辐射
+							sn: i,					//单元格序号
+							isUserDefMode: false,	//是否为用户自定义状态
+							innerdata: [],			//填入的可选数值
+							system: false,			//系统给定了提示数值
+							userlocked: false,		//用户填入唯一数值，并确定
+							isEmpty: true,			//没有填入任何数值
+							belongrow: {},			//单元格所属的行
+							belongcol: {},			//单元格所属的列
+							belongarea: {},			//单元格所属的区域
+							selected: false,		//单元格是否被选中
+							irradiated: false,		//单元格是否被辐射
 						});
 					} else {
 						_temp.push({
-							sn: i,				//单元格序号
+							sn: i,					//单元格序号
+							isUserDefMode: false,	//是否为用户自定义状态
 							innerdata: [this.sudoku_array[i]],
 							system: true,		//系统给定了提示数值
 							userlocked: false,	//用户填入唯一数值，并确定
@@ -549,7 +559,6 @@
 					//console.log('有用户自定义的盘局');
 					this.sudokuid = JSON.parse(sessionStorage.getItem('userdefineid'));
 					this.sudoku_array = JSON.parse(sessionStorage.getItem('userdefine'));
-					//console.log(this.sudoku_array);
 				}
 				this.initSudokuData();
 				this.initSudokuRows();
