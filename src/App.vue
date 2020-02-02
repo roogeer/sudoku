@@ -249,8 +249,8 @@
 				sessionStorage.setItem('userdefine', JSON.stringify(this.sudoku_array));
 			},
 			gameStart(){
-				this.$axios.get('http://192.168.108.79:8983/cgi-bin/getdata.py')
-				//this.$axios.get('https://www.roogeer.com/cgi-bin/getdata.py')
+				//this.$axios.get('http://192.168.108.79:8983/cgi-bin/getdata.py')
+				this.$axios.get('https://www.roogeer.com/cgi-bin/getdata.py')
 				.then(response => {
 					this.sudokuid = response.data.sudokuid;
 					this.sudoku_array.splice(0);
